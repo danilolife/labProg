@@ -1,6 +1,6 @@
 /* Universidade Estadual da Paraíba
 *  Atividade de Laboratório 02 - Prof.: Daniel Gondim
-*  Alunos: Higor Pereira / Lanmark Rafael / Danilo de Souza
+*  Aluno: Higor Pereira
  */
 package lab02;
 
@@ -9,7 +9,6 @@ import java.util.Scanner;
 
 public class PedraPapelTesoura {
 
-    
     private final Jogador jogador;
     private final JogadorPC jogadorpc;
     private int placarJogador;
@@ -20,7 +19,7 @@ public class PedraPapelTesoura {
         PEDRA, PAPEL, TESOURA;
 
         public int compareMoves(Move otherMove) {
-    
+
             if (this == otherMove) {
                 return 0;
             }
@@ -47,34 +46,28 @@ public class PedraPapelTesoura {
         }
 
         public Move getMove() {
-            
+
             System.out.print("Pedra (1), Papel (2), Tesoura (3)? ");
 
             String jogadorInput = inputScanner.nextLine();
             jogadorInput = jogadorInput.toUpperCase();
-            char firstLetter = jogadorInput.charAt(0);
-            if (firstLetter == 'P' || firstLetter == 'A' || firstLetter == 'T') {
-                // User has entered a valid input
-                switch (firstLetter) {
-                    case 'P':
+            int jogada = jogadorInput.charAt(0);
+            if (jogada == '1' || jogada == '2' || jogada == '3') {
+                // Switch das Jogadas Disponíveis
+                switch (jogada) {
+                    case '1':
                         return Move.PEDRA;
-                    case 'A':
+                    case '2':
                         return Move.PAPEL;
-                    case 'T':
+                    case '3':
                         return Move.TESOURA;
                 }
             }
 
-            System.out.print("Você inseriu uma opção inválida. Tente novamente!");
+            System.out.print("Você inseriu uma opção inválida. Tente novamente!\n");
             return getMove();
         }
 
-        public boolean playAgain() {
-            System.out.print("Gostaria de jogar novamente?\nSe sim, informe um número qualquer. Se não, informe '-1': ");
-            String jogadorInput = inputScanner.nextLine();
-            jogadorInput = jogadorInput.toUpperCase();
-            return jogadorInput.charAt(0) == 'Y';
-        }
     }
 
     private class JogadorPC {
@@ -104,25 +97,29 @@ public class PedraPapelTesoura {
         System.out.println("\nVocê jogou " + jogadorMove + ".");
         System.out.println("O Computador jogou " + jogadorpcMove + ".\n");
 
-        // Compare moves and determine winner
+        // Comparando os movimentos e determinando o vencedor
         int compareMoves = jogadorMove.compareMoves(jogadorpcMove);
         switch (compareMoves) {
-            case 0: // Tie
-                System.out.println("Tie!");
+            case 0: //Empate
+                System.out.println("Empate!");
                 break;
-            case 1: // User wins
+            case 1: // Vitória do Jogador
                 System.out.println(jogadorMove + " vence " + jogadorpcMove + ". Você ganhou! :D");
                 placarJogador++;
                 break;
-            case -1: // Computer wins
+            case -1: // Vitória do PC
                 System.out.println(jogadorpcMove + " vence " + jogadorMove + ". Você perdeu.. :'(");
                 placarPC++;
                 break;
         }
         numDePartidas++;
 
-        // Ask the jogador to play again
-        if (jogador.playAgain()) {
+        // Solicitando recomeço ou não do jogo
+        System.out.print("Gostaria de jogar novamente?\nSe sim, informe um número qualquer. Se não, informe '-1': ");
+        Scanner entrada = new Scanner(System.in);
+        int jogadorInput = entrada.nextInt();
+        // Estabelecendo parâmetro de sáida
+        if (jogadorInput != -1) {
             System.out.println();
             startGame();
         } else {
@@ -130,26 +127,20 @@ public class PedraPapelTesoura {
         }
     }
 
-    /**
-     * Prints out the statistics of the game. Calculates ties as 1/2 a win in
-     * percentage won.
-     */
+    // Imprime as estatísticas das partidas
     private void printGameStats() {
-        int wins = placarJogador;
-        int losses = placarPC;
-        int ties = numDePartidas - placarJogador - placarPC;
-        double percentageWon = (wins + ((double) ties) / 2) / numDePartidas;
+        int vitorias = placarJogador;
+        int derrotas = placarPC;
+        int empates = numDePartidas - placarJogador - placarPC;
+        double percentageWon = (vitorias + ((double) empates) / 2) / numDePartidas;
 
-        // Line
         System.out.print("+");
         printDashes(58);
         System.out.println("+");
 
-        // Print titles
         System.out.printf("| %6s | %6s | %6s | %12s | %14s |\n",
                 "V", "D", "E", "PJ", "APROV");
 
-        // Line
         System.out.print("|");
         printDashes(8);
         System.out.print("+");
@@ -162,11 +153,9 @@ public class PedraPapelTesoura {
         printDashes(16);
         System.out.println("|");
 
-        // Print values
         System.out.printf("| %6d | %6d | %6d | %12d | %13.2f%% |\n",
-                wins, losses, ties, numDePartidas, percentageWon * 100);
+                vitorias, derrotas, empates, numDePartidas, percentageWon * 100);
 
-        // Line
         System.out.print("+");
         printDashes(58);
         System.out.println("+");
